@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VRN Barber</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b0b0c;color:#f5f1e9;font-family:Arial,sans-serif}
+header{padding:22px;text-align:center;border-bottom:1px solid #51432d}
+.logo{font-size:38px;font-weight:900;letter-spacing:8px}
+.logo small{display:block;color:#c9a96e;font-size:12px;letter-spacing:7px}
+.hero{text-align:center;padding:85px 20px;background:radial-gradient(circle,#332719,#0b0b0c 70%)}
+h1{font-size:48px;margin:10px}
+h1 span{color:#c9a96e}
+p{color:#bdb8af;line-height:1.6}
+button,.btn{background:#c9a96e;color:#111;border:0;padding:14px 20px;font-weight:bold;text-decoration:none;cursor:pointer;border-radius:3px}
+section{padding:55px 20px;max-width:950px;margin:auto}
+h2{color:#c9a96e;font-size:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:#171719;border:1px solid #39332a;padding:20px;border-radius:5px}
+.price{font-size:23px;color:#e5d1a9;font-weight:bold}
+label{display:block;margin:13px 0 6px;color:#c9a96e}
+input,select{width:100%;padding:13px;background:#111;color:white;border:1px solid #51432d;border-radius:3px}
+form{background:#171719;padding:22px;border:1px solid #39332a}
+.notice{font-size:13px;color:#bdb8af}
+a{color:#e5d1a9}
+footer{text-align:center;padding:30px;border-top:1px solid #39332a;color:#aaa}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">VRN<small>BARBER</small></div>
+</header>
+
+<div class="hero">
+ <p>BARBERÍA · ESTILO · DETALLE</p>
+ <h1>Tu estilo.<br><span>Tu momento.</span></h1>
+ <p>Reservá tu próximo turno en VRN Barber.</p>
+ <a class="btn" href="#reservar">RESERVAR TURNO</a>
+</div>
+
+<section id="servicios">
+ <h2>Servicios & precios</h2>
+ <div class="grid">
+  <div class="card"><h3>Corte</h3><p>Incluye diseño y cejas · 1 hora</p><div class="price">$12.000</div></div>
+  <div class="card"><h3>Barba</h3><p>30 minutos</p><div class="price">$8.000</div></div>
+  <div class="card"><h3>Corte y barba</h3><p>1 hora</p><div class="price">$15.000</div></div>
+  <div class="card"><h3>Mechas blancas</h3><p>Incluye corte · 5 horas</p><div class="price">$50.000</div></div>
+  <div class="card"><h3>Cambio de base e iluminaciones</h3><p>Incluye corte · 4 horas</p><div class="price">$45.000</div></div>
+  <div class="card"><h3>Global blanco</h3><p>5 a 6 horas</p><div class="price">$50.000</div></div>
+ </div>
+</section>
+
+<section id="reservar">
+ <h2>Solicitá tu turno</h2>
+ <form id="booking">
+  <label>Servicio</label>
+  <select id="service" required>
+   <option value="">Elegir servicio</option>
+   <option>Corte</option><option>Barba</option>
+   <option>Corte y barba</option><option>Mechas blancas</option>
+   <option>Cambio de base e iluminaciones</option><option>Global blanco</option>
+  </select>
+  <label>Fecha</label>
+  <input id="date" type="date" required>
+  <label>Horario solicitado</label>
+  <select id="time" required>
+   <option value="">Elegir horario</option>
+  </select>
+  <label>Nombre y apellido</label>
+  <input id="name" required>
+  <label>Email</label>
+  <input id="email" type="email" required>
+  <label>WhatsApp</label>
+  <input id="phone" type="tel" required>
+  <br><br>
+  <button type="submit">ENVIAR SOLICITUD</button>
+  <p id="message" class="notice"></p>
+ </form>
+ <p class="notice">Atención de martes a sábado, de 15:00 a 23:00. Reservas con 2 horas de anticipación. Tu turno queda pendiente hasta ser confirmado.</p>
+</section>
+
+<section>
+ <h2>Conocé mi trabajo</h2>
+ <p>Seguime en Instagram para ver cortes, diseños y trabajos de color.</p>
+ <a href="https://www.instagram.com/vrnbarber?lqvp=d3I3NHQyc3c2d3g4" target="_blank">INSTAGRAM @VRNBARBER</a>
+ <p>Consultas por WhatsApp: <a href="https://wa.me/5493804211230">3804211230</a></p>
+</section>
+
+<footer>© 2026 VRN BARBER · LA RIOJA, ARGENTINA</footer>
+
+<script>
+const prices={
+"Corte":12000,"Barba":8000,"Corte y barba":15000,
+"Mechas blancas":50000,
+"Cambio de base e iluminaciones":45000,
+"Global blanco":50000
+};
+const durations={
+"Corte":60,"Barba":30,"Corte y barba":60,
+"Mechas blancas":300,
+"Cambio de base e iluminaciones":240,
+"Global blanco":360
+};
+const date=document.getElementById("date");
+const time=document.getElementById("time");
+date.min=new Date().toISOString().slice(0,10);
+
+date.addEventListener("change",()=>{
+ time.innerHTML='<option value="">Elegir horario</option>';
+ const d=new Date(date.value+"T12:00:00").getDay();
+ if(![2,3,4,5,6].includes(d)){
+  time.innerHTML='<option value="">No hay atención ese día</option>';return;
+ }
+ const service=document.getElementById("service").value;
+ if(!service)return;
+ const duration=durations[service];
+ const now=new Date();
+ for(let t=900;t+duration<=1380;t+=30){
+  if(date.value===new Date().toISOString().slice(0,10)&&
+  t<now.getHours()*60+now.getMinutes()+120)continue;
+  let h=String(Math.floor(t/60)).padStart(2,"0");
+  let m=String(t%60).padStart(2,"0");
+  time.add(new Option(h+":"+m,h+":"+m));
+ }
+});
+document.getElementById("service").addEventListener("change",()=>{
+ if(date.value)date.dispatchEvent(new Event("change"));
+});
+document.getElementById("booking").addEventListener("submit",e=>{
+ e.preventDefault();
+ const booking={
+ service:document.getElementById("service").value,
+ date:date.value,time:time.value,
+ name:document.getElementById("name").value,
+ email:document.getElementById("email").value,
+ phone:document.getElementById("phone").value
+ };
+ const list=JSON.parse(localStorage.getItem("vrnRequests")||"[]");
+ list.push(booking);
+ localStorage.setItem("vrnRequests",JSON.stringify(list));
+ document.getElementById("message").textContent=
+ "Solicitud guardada en esta demostración. El turno todavía no está confirmado.";
+ e.target.reset();
+ time.innerHTML='<option value="">Elegir horario</option>';
+});
+</script>
+</body>
+</html>
